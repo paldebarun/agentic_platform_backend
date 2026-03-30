@@ -12,12 +12,20 @@ from agno.os.interfaces.agui import AGUI
 from templates.agent_os_template import AGENT_OS
 from app_config import get_model
 from config import ORCHESTRATOR_INSTRUCTIONS
-from agno_agents.agno_db import get_agno_db
-# from agno_agents.agents.contract_compliance.orchestrator_pipeline import compliance_workflow
-# from agno.tools.workflow import WorkflowTools
+from utils.agno_db import get_agno_db
+from workflow_pipeline import document_processing_workflow
+from agno.tools.workflow import WorkflowTools
 # from custom_tools.get_document_tool import get_document
-from subsgents.agent1 import (
+from subagents.document_classifier_agent import (
     create_document_classifier_agent
+)
+
+from subagents.document_extraction_agent import (
+    create_document_extraction_agent
+)
+
+from subagents.document_validation_agent import (
+    create_document_validation_agent
 )
 
 # Create all specialized agents (for reference, but not used as tools)
@@ -25,19 +33,20 @@ from subsgents.agent1 import (
 
 
 document_classifier_agent=create_document_classifier_agent()
-
+document_extraction_agent=create_document_extraction_agent()
+document_validation_agent=create_document_validation_agent()
   
 
 
 
-# workflow_tools = WorkflowTools(  
-#     workflow=compliance_workflow,  
-#     enable_think=True,  
-#     enable_analyze=True,  
-#     add_few_shot=True,  
-#     async_mode=True, 
-#      # Optional: provide examples  
-# )  
+workflow_tools = WorkflowTools(  
+    workflow=document_processing_workflow,  
+    enable_think=True,  
+    enable_analyze=True,  
+    add_few_shot=True,  
+    async_mode=True, 
+     # Optional: provide examples  
+)  
 
 # Create Docling tools - will be None if Docling service is unavailable
 docling_tools = create_docling_tools()
@@ -46,7 +55,7 @@ docling_tools = create_docling_tools()
 image_retrieval_tools = create_image_retrieval_tools()
 
 tools_list = [
-  
+    workflow_tools,
     docling_tools,
 ]
 

@@ -35,6 +35,10 @@ DOCLING_SERVICE_URL="http://localhost:8082"
 #         temperature=0,
 #     )
 
+HOST=os.environ.get("HOST","localhost")
+PORT=os.environ.get("PORT",8000)
+ENVIRONMENT=os.environ.get("ENVIRONMENT","development")
+
 def get_model(role: str = "worker"):
     model_map = {
         "fast": "gemini-1.5-flash",

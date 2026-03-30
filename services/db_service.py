@@ -1,26 +1,31 @@
 import psycopg2
 from contextlib import contextmanager
 from psycopg2.extras import RealDictCursor
-
-from backend.app_config import POSTGRES_DATABASE_URL
-
+from app_config import POSTGRES_DATABASE_URL
 
 POSTGRES_AVAILABLE = True
 
 
-def get_connection():
+# -----------------------------
+# Connection Factory
+# -----------------------------
+def get_connection(db_url: str):
+    global POSTGRES_AVAILABLE
     try:
         return psycopg2.connect(
-            POSTGRES_DATABASE_URL,
-            connect_timeout=5  
+            db_url,
+            connect_timeout=5
         )
     except Exception as e:
-        global POSTGRES_AVAILABLE
         POSTGRES_AVAILABLE = False
         print(f"Postgres connection failed: {e}")
         return None
 
-
+def _get_db_connection_string():
+    return POSTGRES_DATABASE_URL
+# -----------------------------
+# Client Wrapper
+# -----------------------------
 class PostgresClient:
     def __init__(self, conn):
         self.conn = conn
@@ -28,7 +33,10 @@ class PostgresClient:
 
     def execute_query(self, query, params=None, fetch=False, dict_cursor=False):
         try:
-            cursor = self.conn.cursor(cursor_factory=RealDictCursor) if dict_cursor else self.cursor
+            cursor = (
+                self.conn.cursor(cursor_factory=RealDictCursor)
+                if dict_cursor else self.cursor
+            )
 
             cursor.execute(query, params)
 
@@ -39,8 +47,9 @@ class PostgresClient:
 
         except Exception as e:
             print(f"Query failed: {e}")
+            self.conn.rollback()
             return None
-        
+
     def insert_record(self, table, record: dict, upsert_key: str = None):
         try:
             columns = record.keys()
@@ -94,9 +103,12 @@ class PostgresClient:
             print(f"Error closing DB connection: {e}")
 
 
+# -----------------------------
+# Context Manager (UPDATED)
+# -----------------------------
 @contextmanager
-def connection_scoped_client():
-    conn = get_connection()
+def connection_scoped_client(db_url: str):
+    conn = get_connection(db_url)
 
     if not conn:
         yield None

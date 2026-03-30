@@ -1,5 +1,5 @@
 from templates.agent_template import AGENT_TEMPLATE
-from prototype_agent.config import DOCUMENT_CLASSIFIER_INSTRUCTIONS
+from document_handling_agent.config import DOCUMENT_CLASSIFIER_INSTRUCTIONS
 
 
 def create_document_classifier_agent():

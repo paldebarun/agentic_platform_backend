@@ -9,7 +9,7 @@ from datetime import datetime
 from agno.media import File
 from agno.tools import tool
 
-from backend.app_config import DOCLING_SERVICE_URL
+from app_config import DOCLING_SERVICE_URL
 from services.db_service import connection_scoped_client, POSTGRES_AVAILABLE
 
 
