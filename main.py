@@ -25,7 +25,6 @@ from app_config import PORT,ENVIRONMENT,HOST
 # from interface.file_manager.controller import router as file_manager_router
 # from interface.fs_nodes.controller import router as fs_nodes_router
 # from interface.images.controller import router as images_router
-# from agno_agents.middlewares.keycloak_auth_dependency import KeycloakAuthMiddleware
 # from agno_agents.Teams.file_organisation_team import file_organisation_team
 
 # from agno_agents.Teams.document_processing import (
@@ -91,9 +90,6 @@ global_agent_os = AgentOS(
 
 
 app = global_agent_os.get_app()
-# app.add_middleware(
-#     KeycloakAuthMiddleware
-# )
 
 # app.include_router(chat_title_router)
 # app.include_router(custom_agent_run_router)
@@ -104,9 +100,6 @@ app = global_agent_os.get_app()
 # setup_logging(app)
 
 
-# app.add_middleware(
-#     KeycloakAuthMiddleware
-# )
 
 
 
@@ -281,23 +274,12 @@ if __name__ == "__main__":
     environment = ENVIRONMENT
     use_reload = environment != "production"
 
-    logger.info("\n" + "=" * 60)
-    logger.info("Agno Agents - Global Agent OS")
-    logger.info("=" * 60)
-    logger.info("Available Agents (%s):", len(all_agents))
-    logger.info("  1. Contract Compliance OS")
-    logger.info("  2. RFP & Vendor Evaluation OS")
-    logger.info("  3. Invoice Parsing Agent")
-    logger.info("  4. Pricebook Management Agent")
-    logger.info("  5. File Organiser Agent")
-    logger.info("  RAG (ChromaDB): via Agentic RAG team only")
-    # logger.info("MCP Server: %s", SERVER_BASE_URL)
-    logger.info("Server starting... (ENV=%s, reload=%s)", environment, use_reload)
-    logger.info("AGUI endpoint: http://%s:%s/agui", host, port)
-    logger.info("Status: http://%s:%s/status", host, port)
-    logger.info("Config: http://%s:%s/config", host, port)
-    logger.info("Press Ctrl+C to stop the server")
-    logger.info("=" * 60 + "\n")
+    print("\n" + "=" * 60)
+    print("Agno Agents - Global Agent OS")
+    print("=" * 60)
+    print("Available Agents (%s):", len(all_agents))
+    print("  1. Document Handling Agent")
+    print("=" * 60 + "\n")
 
     # log_mcp_tools_on_startup()
 

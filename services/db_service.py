@@ -107,8 +107,9 @@ class PostgresClient:
 # Context Manager (UPDATED)
 # -----------------------------
 @contextmanager
-def connection_scoped_client(db_url: str):
-    conn = get_connection(db_url)
+def connection_scoped_client(db_url: str = None):
+    resolved_db_url = db_url or _get_db_connection_string()
+    conn = get_connection(resolved_db_url)
 
     if not conn:
         yield None
