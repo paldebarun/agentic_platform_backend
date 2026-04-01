@@ -12,20 +12,20 @@ from agno.agent import Agent
 from agno.os.interfaces.agui import AGUI
 from templates.agent_os_template import AGENT_OS
 from app_config import get_model
-from config import ORCHESTRATOR_INSTRUCTIONS
+from .config import ORCHESTRATOR_INSTRUCTIONS
 from utils.agno_db import get_agno_db
-from workflow_pipeline import document_processing_workflow
+from .workflow_pipeline import document_processing_workflow
 from agno.tools.workflow import WorkflowTools
 # from custom_tools.get_document_tool import get_document
-from subagents.document_classifier_agent import (
+from .subagents.document_classifier_agent import (
     create_document_classifier_agent
 )
 
-from subagents.document_extraction_agent import (
+from .subagents.document_extraction_agent import (
     create_document_extraction_agent
 )
 
-from subagents.document_validation_agent import (
+from .subagents.document_validation_agent import (
     create_document_validation_agent
 )
 

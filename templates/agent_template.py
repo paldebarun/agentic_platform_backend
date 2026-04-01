@@ -1,6 +1,6 @@
 from agno.agent import Agent
 from typing import Optional, List, Any
-from backend.app_config import get_model
+from app_config import get_model
 
 
 class AGENT_TEMPLATE:

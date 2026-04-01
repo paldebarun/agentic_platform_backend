@@ -1,6 +1,10 @@
 import os
 # from agno.models.openai import OpenAIChat
-from gemini_adapter import GeminiModel
+from agno.models.google import Gemini
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "localhost")
 OLLAMA_PORT = os.environ.get("OLLAMA_PORT", "11434")
@@ -47,7 +51,10 @@ def get_model(role: str = "worker"):
         "planner": "gemini-1.5-pro",
     }
 
-    return GeminiModel(model_map.get(role, "gemini-1.5-flash"))
+    return Gemini(
+        id=model_map.get(role, "gemini-1.5-flash"),
+        api_key=GEMINI_API_KEY,
+    )
 
 
 AGENT_OS_BASE_URL = os.environ.get(

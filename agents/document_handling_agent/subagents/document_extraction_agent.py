@@ -1,5 +1,5 @@
 from templates.agent_template import AGENT_TEMPLATE
-from document_handling_agent.config import DOCUMENT_EXTRACTION_INSTRUCTIONS
+from agents.document_handling_agent.config import DOCUMENT_EXTRACTION_INSTRUCTIONS
 
 
 def create_document_extraction_agent():
