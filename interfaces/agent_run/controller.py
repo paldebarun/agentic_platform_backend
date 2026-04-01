@@ -5,9 +5,8 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
 from interfaces.agent_run.util import process_uploads_and_build_message
-from interface.utils.config import AGENT_OS_BASE_URL
-from interface.utils.id_validation import validate_uuid
-from interface.utils.log import logger
+from app_config import AGENT_OS_BASE_URL
+from interfaces.utils.id_validation import validate_uuid
 
 router = APIRouter()
 
@@ -33,17 +32,7 @@ async def send_message(
     elif not isinstance(files, list):
         files = [files]
 
-    logger.info(
-        "send_message: agent_id=%s session_id=%s user_id=%s version=%s stream=%s files_count=%d",
-        agent_id,
-        session_id or "(empty)",
-        user_id or "(none)",
-        version or "(none)",
-        stream_val,
-        len(files),
-    )
     if files and not session_id:
-        logger.warning("send_message: rejected - session_id required when sending files")
         raise HTTPException(
             status_code=400,
             detail="session_id is required when sending files",
@@ -57,11 +46,6 @@ async def send_message(
     base = (AGENT_OS_BASE_URL or "").rstrip("/")
 
     run_url = f"{base}/agents/{agent_id}/runs"
-    logger.info(
-        "send_message: forwarding to run endpoint url=%s docs_attached=%d",
-        run_url,
-        len(document_ids),
-    )
 
     form_data = {
         "message": message_with_docs,
@@ -75,7 +59,6 @@ async def send_message(
     async def stream_chunks():
         try:
             headers = {"Accept": "text/event-stream"}
-            logger.debug("send_message: opening stream to %s", run_url)
             async with httpx.AsyncClient(timeout=3600.0) as client:
                 async with client.stream(
                     "POST",
@@ -84,28 +67,15 @@ async def send_message(
                     headers=headers,
                 ) as response:
                     response.raise_for_status()
-                    logger.info(
-                        "send_message: stream started status=%s",
-                        response.status_code,
-                    )
                     async for chunk in response.aiter_bytes():
                         yield chunk
-            logger.info("send_message: stream completed successfully")
         except httpx.HTTPStatusError as e:
-            err_body = ""
             try:
                 await e.response.aread()
-                err_body = (e.response.text or "")[:500]
             except Exception:
-                err_body = "(response body not available)"
-            logger.error(
-                "send_message: run endpoint error status=%s response=%s",
-                e.response.status_code,
-                err_body,
-            )
+                pass
             raise
-        except Exception as e:
-            logger.exception("send_message: stream failed: %s", e)
+        except Exception:
             raise
 
     return StreamingResponse(

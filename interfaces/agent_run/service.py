@@ -7,7 +7,6 @@ keyed by session_id and user_id for segregation. Used for send_message deduplica
 
 from typing import Any, Dict, List, Optional
 
-from interface.utils.log import logger
 from services.db_service import PostgresClient, connection_scoped_client, POSTGRES_AVAILABLE
 
 _EXTRACTED_DOCUMENTS_TABLE = "extracted_documents"
@@ -19,7 +18,6 @@ def ensure_extracted_documents_table() -> None:
     if _table_initialized:
         return
     if not POSTGRES_AVAILABLE:
-        logger.warning("PostgreSQL not available; extracted documents persistence disabled")
         return
     create_sql = f"""
     CREATE TABLE IF NOT EXISTS {_EXTRACTED_DOCUMENTS_TABLE} (
@@ -45,8 +43,8 @@ def ensure_extracted_documents_table() -> None:
             client.ensure_table_exists(create_sql)
             _add_file_path_org_id_columns(client)
         _table_initialized = True
-    except Exception as exc:
-        logger.warning("Failed to ensure extracted_documents table: %s", exc)
+    except Exception:
+        pass
 
 
 def _add_file_path_org_id_columns(client: PostgresClient) -> None:
@@ -63,8 +61,8 @@ def _add_file_path_org_id_columns(client: PostgresClient) -> None:
                         f"ALTER TABLE {_EXTRACTED_DOCUMENTS_TABLE} ADD COLUMN {col} TEXT NULL"
                     )
                 client.commit()
-        except Exception as e:
-            logger.warning("Could not add column %s to extracted_documents: %s", col, e)
+        except Exception:
+            pass
 
 
 def get_by_session_user_hash(
@@ -105,11 +103,7 @@ def get_by_session_user_hash(
         if "org_id" in row and row["org_id"]:
             out["org_id"] = row["org_id"]
         return out
-    except Exception as exc:
-        logger.warning(
-            "Failed to get extracted document by session/user/hash: %s",
-            exc,
-        )
+    except Exception:
         return None
 
 
@@ -151,11 +145,7 @@ def get_by_user_hash(
         if "org_id" in row and row["org_id"]:
             out["org_id"] = row["org_id"]
         return out
-    except Exception as exc:
-        logger.warning(
-            "Failed to get extracted document by user/hash: %s",
-            exc,
-        )
+    except Exception:
         return None
 
 
@@ -202,8 +192,7 @@ def insert(
                 )
             client.commit()
         return document_id
-    except Exception as exc:
-        logger.warning("Failed to insert extracted document: %s", exc)
+    except Exception:
         return None
 
 
@@ -243,8 +232,7 @@ def get_by_document_id(document_id: str) -> Optional[Dict[str, Any]]:
         if "org_id" in row and row["org_id"]:
             out["org_id"] = row["org_id"]
         return out
-    except Exception as exc:
-        logger.warning("Failed to get extracted document by id %s: %s", document_id, exc)
+    except Exception:
         return None
 
 
@@ -278,8 +266,7 @@ def get_document_for_download(document_id: str) -> Optional[Dict[str, Any]]:
         if row.get("org_id"):
             out["org_id"] = row["org_id"]
         return out if out.get("file_path") or out.get("file_content") else out
-    except Exception as exc:
-        logger.warning("Failed to get document for download %s: %s", document_id, exc)
+    except Exception:
         return None
 
 
@@ -320,10 +307,5 @@ def list_by_session_user(
             }
             for r in rows
         ]
-    except Exception as exc:
-        logger.warning(
-            "Failed to list extracted documents for session %s: %s",
-            session_id,
-            exc,
-        )
+    except Exception:
         return []

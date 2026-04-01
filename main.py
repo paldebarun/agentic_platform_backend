@@ -17,7 +17,7 @@ from agno.os.interfaces.agui import AGUI
 
 # from interface.utils.health import check_db, check_docling
 from app_config import PORT,ENVIRONMENT,HOST
-# from agno_agents.log import setup_logging, logger
+# from agno_agents.log import setup_logging
 # from agno_agents.mcp_tools_configuration import log_mcp_tools_on_startup
 # from interface.chat_title.controller import router as chat_title_router
 # from interface.custom_agent_run.controller import router as custom_agent_run_router
@@ -209,54 +209,7 @@ app = global_agent_os.get_app()
 #                 json_response.headers[key] = value
 #         return json_response
 #     except Exception as e:
-#         logger.warning("Config payload enrichment failed: %s", e, exc_info=True)
 #         return response
-
-
-# def _run_mcp_inspection() -> None:
-#     """Run MCP tools inspection at module load (synchronous)."""
-#     from agno_agents.mcp_tools_configuration import create_mcp_tools
-#     import asyncio
-
-#     logger.info("=" * 70)
-#     logger.info("MCP TOOLS INSPECTION (at module load)")
-#     logger.info("=" * 70)
-#     try:
-#         mcp_tools = create_mcp_tools()
-#         if mcp_tools is None:
-#             logger.info("MCP tools not created")
-#             return
-#         logger.info("MCP tools instance: %s", type(mcp_tools).__name__)
-#         attrs = [a for a in dir(mcp_tools) if not a.startswith("_")]
-#         logger.info("Public attributes: %s", attrs)
-#         for attr in ("functions", "tools", "initialized", "server_params", "transport"):
-#             if hasattr(mcp_tools, attr):
-#                 val = getattr(mcp_tools, attr)
-#                 logger.info("  .%s = %s: %s", attr, type(val).__name__, repr(val)[:200])
-#         async def _inspect() -> None:
-#             logger.info("-" * 70)
-#             logger.info("Connecting to MCP server...")
-#             async with mcp_tools:
-#                 logger.info("CONNECTED. Inspecting mcp_tools.")
-#                 for attr in dir(mcp_tools):
-#                     if attr.startswith("__"):
-#                         continue
-#                     try:
-#                         val = getattr(mcp_tools, attr)
-#                         if callable(val):
-#                             logger.info("  .%s() -> %s", attr, "async" if asyncio.iscoroutinefunction(val) else "method")
-#                         else:
-#                             logger.info("  .%s = %s", attr, repr(val)[:200])
-#                     except Exception as e:
-#                         logger.info("  .%s -> ERROR: %s", attr, e)
-#         try:
-#             loop = asyncio.get_running_loop()
-#             asyncio.create_task(_inspect())
-#         except RuntimeError:
-#             asyncio.run(_inspect())
-#     except Exception as e:
-#         logger.error("MCP inspection failed: %s", e, exc_info=True)
-#     logger.info("=" * 70)
 
 
 # if os.environ.get("RUN_MAIN") != "true":

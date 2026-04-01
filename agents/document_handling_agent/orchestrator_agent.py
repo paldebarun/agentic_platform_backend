@@ -7,6 +7,7 @@ Uses Python-level orchestration pipeline instead of agent-as-tool pattern.
 
 from custom_tools.docling_tool import create_docling_tools
 from custom_tools.image_retrieval_tool import create_image_retrieval_tools
+from custom_tools.fetch_document_tool import get_document
 from agno.agent import Agent
 from agno.os.interfaces.agui import AGUI
 from templates.agent_os_template import AGENT_OS
@@ -57,6 +58,7 @@ image_retrieval_tools = create_image_retrieval_tools()
 tools_list = [
     workflow_tools,
     docling_tools,
+    get_document,
 ]
 
 if image_retrieval_tools:
@@ -84,7 +86,6 @@ orchestrator_agent = Agent(
 #     """Format compliance report for display"""
 #     if report.get("status") == "error":
 #         error_msg = f"Error occured while generating compliance report"
-#         logger.error(error_msg+ " : " + report.get('error', 'Unknown error'))
 #         return error_msg
     
 #     summary = report.get("summary", {})

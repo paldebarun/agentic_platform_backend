@@ -10,7 +10,6 @@ import os
 from typing import Optional, Any
 
 from services.db_service import _get_db_connection_string
-# from agno_agents.log import logger
 
 _agno_db: Optional[Any] = None
 _SESSION_TABLE = "agno_sessions"

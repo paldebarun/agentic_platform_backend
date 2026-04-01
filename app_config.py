@@ -38,6 +38,7 @@ DOCLING_SERVICE_URL="http://localhost:8082"
 HOST=os.environ.get("HOST","localhost")
 PORT=os.environ.get("PORT",8000)
 ENVIRONMENT=os.environ.get("ENVIRONMENT","development")
+BASE_PROTOCOL = os.environ.get("BASE_PROTOCOL", "http")
 
 def get_model(role: str = "worker"):
     model_map = {
@@ -47,3 +48,9 @@ def get_model(role: str = "worker"):
     }
 
     return GeminiModel(model_map.get(role, "gemini-1.5-flash"))
+
+
+AGENT_OS_BASE_URL = os.environ.get(
+    "AGENT_OS_BASE_URL",
+    f"{BASE_PROTOCOL}://{HOST}:{PORT}",
+)
