@@ -14,7 +14,8 @@ import uvicorn
 from agno.os import AgentOS
 from agno.os.interfaces.agui import AGUI
 # from fastapi.responses import JSONResponse
-
+from interfaces.agent_run.controller import router as custom_agent_run_router
+from interfaces.team_run.controller import router as custom_team_run_router
 # from interface.utils.health import check_db, check_docling
 from app_config import PORT,ENVIRONMENT,HOST
 # from agno_agents.log import setup_logging
@@ -92,8 +93,8 @@ global_agent_os = AgentOS(
 app = global_agent_os.get_app()
 
 # app.include_router(chat_title_router)
-# app.include_router(custom_agent_run_router)
-# app.include_router(custom_team_run_router)
+app.include_router(custom_agent_run_router)
+app.include_router(custom_team_run_router)
 # app.include_router(file_manager_router)
 # app.include_router(fs_nodes_router)
 # app.include_router(images_router)

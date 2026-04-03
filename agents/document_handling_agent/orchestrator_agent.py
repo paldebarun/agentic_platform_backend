@@ -69,12 +69,12 @@ tools_list = [t for t in tools_list if t is not None]
 
 
 orchestrator_agent = Agent(
-    name="Contract Compliance Query Interface",
+    name="Document Handling Orchestrator",
     model=get_model("planner"),
     tools=tools_list,
     instructions=ORCHESTRATOR_INSTRUCTIONS,
     markdown=False,
-    description="Multi-agent system for contract compliance tracking, SLA monitoring, obligation tracking, and risk assessment. This agent orchestrates the contract compliance analysis pipeline and provides query interface for compliance insights.",
+    description="Multi-agent system for document handling and processing. This agent orchestrates the document handling and processing pipeline and provides query interface for document handling and processing insights.",
     send_media_to_model=False,  # AGUI extracts text automatically
     db=get_agno_db(),
     add_history_to_context=True,

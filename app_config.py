@@ -43,6 +43,7 @@ HOST=os.environ.get("HOST","localhost")
 PORT=os.environ.get("PORT",8000)
 ENVIRONMENT=os.environ.get("ENVIRONMENT","development")
 BASE_PROTOCOL = os.environ.get("BASE_PROTOCOL", "http")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 def get_model(role: str = "worker"):
     model_map = {
